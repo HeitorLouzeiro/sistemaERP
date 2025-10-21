@@ -1,0 +1,335 @@
+{
+	"info": {
+		"_postman_id": "sistemaerp-api-collection",
+		"name": "Sistema ERP API",
+		"description": "Coleção completa para testar a API do Sistema ERP\n\nVariáveis de ambiente:\n- `base_url`: URL base da API (padrão: http://localhost:8000)\n- `access_token`: Token JWT de acesso (preenchido automaticamente após login)\n- `refresh_token`: Token JWT de refresh (preenchido automaticamente após login)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Signup - Criar Novo Usuário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"    ",
+									"    pm.test(\"Response has user object\", function () {",
+									"        pm.expect(responseData).to.have.property('user');",
+									"        pm.expect(responseData.user).to.have.property('id');",
+									"        pm.expect(responseData.user).to.have.property('name');",
+									"        pm.expect(responseData.user).to.have.property('email');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"João Silva\",\n    \"email\": \"joao.silva@example.com\",\n    \"password\": \"senhaSegura123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/signup/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup",
+								""
+							]
+						},
+						"description": "Cria um novo usuário no sistema.\n\n**Body Parameters:**\n- `name` (string, required): Nome completo do usuário\n- `email` (string, required): Email único do usuário\n- `password` (string, required): Senha do usuário\n\n**Response:**\n- `user`: Objeto contendo informações do usuário criado (id, name, email)"
+					},
+					"response": []
+				},
+				{
+					"name": "Signin - Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    // Salva os tokens nas variáveis de ambiente",
+									"    if (responseData.access) {",
+									"        pm.environment.set(\"access_token\", responseData.access);",
+									"    }",
+									"    ",
+									"    if (responseData.refresh) {",
+									"        pm.environment.set(\"refresh_token\", responseData.refresh);",
+									"    }",
+									"    ",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"    ",
+									"    pm.test(\"Response has required fields\", function () {",
+									"        pm.expect(responseData).to.have.property('user');",
+									"        pm.expect(responseData).to.have.property('enterprise');",
+									"        pm.expect(responseData).to.have.property('access');",
+									"        pm.expect(responseData).to.have.property('refresh');",
+									"    });",
+									"    ",
+									"    pm.test(\"Tokens are valid strings\", function () {",
+									"        pm.expect(responseData.access).to.be.a('string').and.not.empty;",
+									"        pm.expect(responseData.refresh).to.be.a('string').and.not.empty;",
+									"    });",
+									"    ",
+									"    console.log(\"✅ Login realizado com sucesso!\");",
+									"    console.log(\"Access Token salvo na variável de ambiente\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"joao.silva@example.com\",\n    \"password\": \"senhaSegura123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/signin/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signin",
+								""
+							]
+						},
+						"description": "Realiza o login do usuário e retorna os tokens JWT.\n\n**Body Parameters:**\n- `email` (string, required): Email do usuário\n- `password` (string, required): Senha do usuário\n\n**Response:**\n- `user`: Objeto contendo informações do usuário\n- `enterprise`: Objeto contendo informações da empresa/permissões\n- `access`: Token JWT de acesso (válido por tempo limitado)\n- `refresh`: Token JWT para renovação\n\n**Nota:** Os tokens são salvos automaticamente nas variáveis de ambiente para uso nas próximas requisições."
+					},
+					"response": []
+				},
+				{
+					"name": "Get User - Obter Usuário Autenticado",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Status code is 200\", function () {",
+									"        pm.response.to.have.status(200);",
+									"    });",
+									"    ",
+									"    pm.test(\"Response has user and enterprise\", function () {",
+									"        pm.expect(responseData).to.have.property('user');",
+									"        pm.expect(responseData).to.have.property('enterprise');",
+									"    });",
+									"    ",
+									"    pm.test(\"User has required fields\", function () {",
+									"        pm.expect(responseData.user).to.have.property('id');",
+									"        pm.expect(responseData.user).to.have.property('name');",
+									"        pm.expect(responseData.user).to.have.property('email');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/user/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"user",
+								""
+							]
+						},
+						"description": "Retorna as informações do usuário autenticado.\n\n**Authentication:** Bearer Token (JWT)\n\n**Headers:**\n- `Authorization`: Bearer {access_token}\n\n**Response:**\n- `user`: Objeto contendo informações do usuário (id, name, email)\n- `enterprise`: Objeto contendo informações da empresa e permissões do usuário\n  - `is_owner`: Booleano indicando se o usuário é proprietário\n  - `permissions`: Array de permissões (se não for proprietário)"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints relacionados à autenticação de usuários"
+		},
+		{
+			"name": "Companies",
+			"item": [
+				{
+					"name": "List Enterprises - Listar Empresas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/companies/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								""
+							]
+						},
+						"description": "Lista todas as empresas cadastradas.\n\n**Authentication:** Bearer Token (JWT)\n\n**Nota:** Este endpoint pode não estar implementado ainda. Verifique a implementação no backend."
+					},
+					"response": []
+				},
+				{
+					"name": "Create Enterprise - Criar Empresa",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Minha Empresa Ltda\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/companies/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								""
+							]
+						},
+						"description": "Cria uma nova empresa.\n\n**Authentication:** Bearer Token (JWT)\n\n**Body Parameters:**\n- `name` (string, required): Nome da empresa\n\n**Nota:** Este endpoint pode não estar implementado ainda. Verifique a implementação no backend."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints relacionados à gestão de empresas (a ser implementado)"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
