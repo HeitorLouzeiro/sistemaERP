@@ -1,4 +1,4 @@
-# core/urls.py
+# accounts/urls.py
 from accounts.views.signin import Signin
 from accounts.views.signup import Signup
 from accounts.views.user import GetUser
