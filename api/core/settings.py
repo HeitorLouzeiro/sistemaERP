@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'accounts',
+    'companies',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +143,5 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
     # Outras configurações do Simple JWT podem ser adicionadas aqui
 }
+
+AUTH_USER_MODEL = 'accounts.User'
