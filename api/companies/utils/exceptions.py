@@ -28,4 +28,4 @@ class NotFoundTaskStatus(APIException):
 class NotFoundTask(APIException):
     status_code = 404
     default_detail = 'Tarefa não encontrada'
-    default_code = 'not_found_task'    default_code = 'not_found_task'
+    default_code = 'not_found_task'
