@@ -197,6 +197,35 @@ function SidebarMenu() {
             </List>
           </SubMenuWrapper>
         </List>
+
+
+
+                <List
+          component="div"
+          subheader={
+            <ListSubheader component="div" disableSticky>
+              Cargos
+            </ListSubheader>
+          }
+        >
+          <SubMenuWrapper>
+            <List component="div">
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to="/Grupos"
+                  startIcon={<BrightnessLowTwoToneIcon />}
+                >
+                  Gerenciar Cargos
+                </Button>
+              </ListItem>
+            </List>
+          </SubMenuWrapper>
+        </List>
+
+
         <List
           component="div"
           subheader={
@@ -232,6 +261,11 @@ function SidebarMenu() {
             </List>
           </SubMenuWrapper>
         </List>
+
+
+
+
+
         <List
           component="div"
           subheader={
