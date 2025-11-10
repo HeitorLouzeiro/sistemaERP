@@ -48,6 +48,8 @@ export const useAuth = () => {
             // Save token access
             localStorage.setItem(LOCAL_STORAGE_KEY, response.data.access);
         }
+
+        return response;
     }
 
     const handleSignOut = () => {
