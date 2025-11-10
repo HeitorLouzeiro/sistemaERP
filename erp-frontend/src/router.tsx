@@ -15,8 +15,12 @@ const Loader = (Component) => (props) =>
   );
 
 
+// Auth
 const SignIn = Loader(lazy(() => import('src/content/Auth/SignIn')));
   
+// Groups
+const Groups = Loader(lazy(() => import('src/content/pages/Groups/Groups')));
+
 // Pages
 
 const Overview = Loader(lazy(() => import('src/content/overview')));
@@ -84,9 +88,21 @@ const routes: RouteObject[] = [
     path: '',
     element: <BaseLayout />,
     children: [
+      // Auth
       {
         path: '/signin',
         element: <SignIn />
+      },
+      // Groups
+      {
+        path: 'groups',
+        element: <SidebarLayout />,
+        children: [
+          {
+            path: '/groups',
+            element: <Groups />
+          }
+        ]
       },
       {
         path: '/',
