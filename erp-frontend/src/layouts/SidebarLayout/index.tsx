@@ -28,7 +28,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = () => {
   }, []);
 
   if (authLoading) {
-    <LinearProgress style={{ height: 3}} />
+    return <LinearProgress style={{ height: 3}} />
   }
 
   return (

@@ -31,6 +31,7 @@ import ChromeReaderModeTwoToneIcon from '@mui/icons-material/ChromeReaderModeTwo
 import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwoTone';
 import CameraFrontTwoToneIcon from '@mui/icons-material/CameraFrontTwoTone';
 import DisplaySettingsTwoToneIcon from '@mui/icons-material/DisplaySettingsTwoTone';
+import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -215,10 +216,21 @@ function SidebarMenu() {
                   disableRipple
                   component={RouterLink}
                   onClick={closeSidebar}
-                  to="/Grupos"
+                  to="/groups"
                   startIcon={<BrightnessLowTwoToneIcon />}
                 >
                   Gerenciar Cargos
+                </Button>
+              </ListItem>
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to="/groups/add"
+                  startIcon={<AddTwoToneIcon />}
+                >
+                  Adicionar Cargo
                 </Button>
               </ListItem>
             </List>

@@ -7,6 +7,7 @@ import BaseLayout from 'src/layouts/BaseLayout';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
 
+
 const Loader = (Component) => (props) =>
   (
     <Suspense fallback={<SuspenseLoader />}>
@@ -20,7 +21,8 @@ const SignIn = Loader(lazy(() => import('src/content/Auth/SignIn')));
   
 // Groups
 const Groups = Loader(lazy(() => import('src/content/pages/Groups/Groups')));
-
+const AddGroup = Loader(lazy(() => import('src/content/pages/Groups/Add')));
+const EditGroup = Loader(lazy(() => import('src/content/pages/Groups/Edit')));
 // Pages
 
 const Overview = Loader(lazy(() => import('src/content/overview')));
@@ -99,9 +101,19 @@ const routes: RouteObject[] = [
         element: <SidebarLayout />,
         children: [
           {
-            path: '/groups',
+            path: '',
             element: <Groups />
+          },
+          {
+            path: 'add',
+            element: <AddGroup />
+          },
+          {
+            path: 'edit/:id',
+            element: <EditGroup />
           }
+          
+
         ]
       },
       {
