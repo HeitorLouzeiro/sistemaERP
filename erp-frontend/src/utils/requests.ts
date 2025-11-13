@@ -3,7 +3,7 @@ import { useApi } from "src/utils/api";
 import { ApiGetPermissions } from "src/models/Permission";
 import { ApiGetGroup, ApiGetGroups } from "src/models/Group";
 import { ApiGetEmployee, ApiGetEmployees } from "src/models/Employee";
-import { ApiGetTask, ApiGetTasks } from "src/models/Task";
+import { ApiGetTask, ApiGetTasks, ApiGetTaskStatuses } from "src/models/Task";
 
 // Authentication
 const signIn = async ({ email, password }: { email: string, password: string }) => {
@@ -106,6 +106,11 @@ const deleteTask = async (id: number) => {
     return response;
 }
 
+const getTaskStatuses = async () => {
+    const response = await useApi<ApiGetTaskStatuses>('companies/task-statuses');
+    return response;
+}
+
 
 // Exporting all requests
 export const useRequests = () => ({
@@ -133,5 +138,6 @@ export const useRequests = () => ({
     getAnTask,
     addTask,
     editTask,
-    deleteTask
+    deleteTask,
+    getTaskStatuses
 });

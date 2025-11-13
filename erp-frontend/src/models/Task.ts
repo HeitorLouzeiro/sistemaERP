@@ -1,5 +1,11 @@
 import { Employee } from "./Employee";
 
+export type TaskStatus = {
+    id: number;
+    name: string;
+    codename: string;
+}
+
 export type Task = {
     id: number;
     title: string;
@@ -19,4 +25,8 @@ export type ApiGetTasks = {
 
 export type ApiGetTask = {
     task: TaskDetail;
+}
+
+export type ApiGetTaskStatuses = {
+    statuses: TaskStatus[];
 }
