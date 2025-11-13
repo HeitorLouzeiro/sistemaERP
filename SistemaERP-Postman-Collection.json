@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "sistemaerp-api-collection",
 		"name": "Sistema ERP API",
-		"description": "Coleção completa para testar a API do Sistema ERP\n\nVariáveis de ambiente:\n- `base_url`: URL base da API (padrão: http://localhost:8000)\n- `access_token`: Token JWT de acesso (preenchido automaticamente após login)\n- `refresh_token`: Token JWT de refresh (preenchido automaticamente após login)",
+		"description": "Coleção completa para testar a API do Sistema ERP\n\nVariáveis de ambiente:\n- `base_url`: URL base da API (padrão: http://localhost:8000)\n- `access_token`: Token JWT de acesso (preenchido automaticamente após login)\n- `refresh_token`: Token JWT de refresh (preenchido automaticamente após login)\n- `employee_id`: ID do funcionário criado (preenchido automaticamente)\n- `group_id`: ID do grupo criado (preenchido automaticamente)\n- `task_id`: ID da tarefa criada (preenchido automaticamente)",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -202,6 +202,833 @@
 			"description": "Endpoints relacionados à autenticação de usuários"
 		},
 		{
+			"name": "Employees",
+			"item": [
+				{
+					"name": "List Employees - Listar Funcionários",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Response is an array\", function () {",
+									"        pm.expect(responseData).to.be.an('array');",
+									"    });",
+									"    ",
+									"    if (responseData.length > 0) {",
+									"        pm.test(\"Employee has required fields\", function () {",
+									"            pm.expect(responseData[0]).to.have.property('id');",
+									"            pm.expect(responseData[0]).to.have.property('user');",
+									"            pm.expect(responseData[0]).to.have.property('company');",
+									"        });",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/companies/employees",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"employees"
+							]
+						},
+						"description": "Lista todos os funcionários da empresa.\n\n**Authentication:** Bearer Token (JWT)\n\n**Response:** Array de objetos Employee contendo:\n- `id`: ID do funcionário\n- `user`: Objeto com dados do usuário (id, name, email)\n- `company`: Objeto com dados da empresa\n- `groups`: Array de grupos aos quais o funcionário pertence"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Employee - Criar Funcionário",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    if (responseData.id) {",
+									"        pm.environment.set(\"employee_id\", responseData.id);",
+									"        console.log(\"✅ Employee ID salvo: \" + responseData.id);",
+									"    }",
+									"    ",
+									"    pm.test(\"Status code is 201\", function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"    ",
+									"    pm.test(\"Response has required fields\", function () {",
+									"        pm.expect(responseData).to.have.property('id');",
+									"        pm.expect(responseData).to.have.property('user');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Maria Santos\",\n    \"email\": \"maria.santos@example.com\",\n    \"password\": \"senhaSegura123\",\n    \"groups\": []\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/companies/employees",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"employees"
+							]
+						},
+						"description": "Cria um novo funcionário na empresa.\n\n**Authentication:** Bearer Token (JWT)\n\n**Body Parameters:**\n- `name` (string, required): Nome completo do funcionário\n- `email` (string, required): Email único do funcionário\n- `password` (string, required): Senha inicial do funcionário\n- `groups` (array, optional): Array de IDs de grupos aos quais o funcionário pertencerá\n\n**Response:** Objeto Employee criado"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Employee - Obter Funcionário",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/companies/employees/{{employee_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"employees",
+								"{{employee_id}}"
+							]
+						},
+						"description": "Obtém os detalhes de um funcionário específico.\n\n**Authentication:** Bearer Token (JWT)\n\n**Path Parameters:**\n- `employee_id`: ID do funcionário"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Employee - Atualizar Funcionário",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Maria Santos Oliveira\",\n    \"email\": \"maria.santos@example.com\",\n    \"groups\": []\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/companies/employees/{{employee_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"employees",
+								"{{employee_id}}"
+							]
+						},
+						"description": "Atualiza os dados de um funcionário.\n\n**Authentication:** Bearer Token (JWT)\n\n**Path Parameters:**\n- `employee_id`: ID do funcionário\n\n**Body Parameters:**\n- `name` (string): Nome atualizado\n- `email` (string): Email atualizado\n- `groups` (array): Array de IDs de grupos"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Employee - Deletar Funcionário",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/companies/employees/{{employee_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"employees",
+								"{{employee_id}}"
+							]
+						},
+						"description": "Remove um funcionário da empresa.\n\n**Authentication:** Bearer Token (JWT)\n\n**Path Parameters:**\n- `employee_id`: ID do funcionário"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gerenciamento de funcionários"
+		},
+		{
+			"name": "Groups",
+			"item": [
+				{
+					"name": "List Groups - Listar Grupos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Response is an array\", function () {",
+									"        pm.expect(responseData).to.be.an('array');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/companies/groups",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"groups"
+							]
+						},
+						"description": "Lista todos os grupos de permissões da empresa.\n\n**Authentication:** Bearer Token (JWT)\n\n**Response:** Array de objetos Group contendo:\n- `id`: ID do grupo\n- `name`: Nome do grupo\n- `permissions`: Array de permissões do grupo"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Group - Criar Grupo",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    if (responseData.id) {",
+									"        pm.environment.set(\"group_id\", responseData.id);",
+									"        console.log(\"✅ Group ID salvo: \" + responseData.id);",
+									"    }",
+									"    ",
+									"    pm.test(\"Status code is 201\", function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Gerentes\",\n    \"permissions\": []\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/companies/groups",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"groups"
+							]
+						},
+						"description": "Cria um novo grupo de permissões.\n\n**Authentication:** Bearer Token (JWT)\n\n**Body Parameters:**\n- `name` (string, required): Nome do grupo\n- `permissions` (array, optional): Array de IDs de permissões"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Group - Obter Grupo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/companies/groups/{{group_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"groups",
+								"{{group_id}}"
+							]
+						},
+						"description": "Obtém os detalhes de um grupo específico.\n\n**Authentication:** Bearer Token (JWT)\n\n**Path Parameters:**\n- `group_id`: ID do grupo"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Group - Atualizar Grupo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Gerentes Sênior\",\n    \"permissions\": []\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/companies/groups/{{group_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"groups",
+								"{{group_id}}"
+							]
+						},
+						"description": "Atualiza os dados de um grupo.\n\n**Authentication:** Bearer Token (JWT)\n\n**Path Parameters:**\n- `group_id`: ID do grupo\n\n**Body Parameters:**\n- `name` (string): Nome atualizado do grupo\n- `permissions` (array): Array de IDs de permissões"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Group - Deletar Grupo",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/companies/groups/{{group_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"groups",
+								"{{group_id}}"
+							]
+						},
+						"description": "Remove um grupo de permissões.\n\n**Authentication:** Bearer Token (JWT)\n\n**Path Parameters:**\n- `group_id`: ID do grupo"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gerenciamento de grupos de permissões"
+		},
+		{
+			"name": "Permissions",
+			"item": [
+				{
+					"name": "List Permissions - Listar Permissões",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/companies/permissions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"permissions"
+							]
+						},
+						"description": "Lista todas as permissões disponíveis no sistema.\n\n**Authentication:** Bearer Token (JWT)\n\n**Response:** Array de objetos Permission contendo:\n- `id`: ID da permissão\n- `name`: Nome da permissão\n- `codename`: Código da permissão\n- `content_type`: Tipo de conteúdo relacionado"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para consulta de permissões do sistema"
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "List Tasks - Listar Tarefas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Response is an array\", function () {",
+									"        pm.expect(responseData).to.be.an('array');",
+									"    });",
+									"    ",
+									"    if (responseData.length > 0) {",
+									"        pm.test(\"Task has required fields\", function () {",
+									"            pm.expect(responseData[0]).to.have.property('id');",
+									"            pm.expect(responseData[0]).to.have.property('title');",
+									"            pm.expect(responseData[0]).to.have.property('status');",
+									"        });",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/companies/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"tasks"
+							]
+						},
+						"description": "Lista todas as tarefas da empresa.\n\n**Authentication:** Bearer Token (JWT)\n\n**Response:** Array de objetos Task contendo:\n- `id`: ID da tarefa\n- `title`: Título da tarefa\n- `description`: Descrição detalhada\n- `status`: Status atual da tarefa\n- `employee`: Funcionário responsável\n- `created_at`: Data de criação\n- `due_date`: Data de vencimento"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Task - Criar Tarefa",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    if (responseData.id) {",
+									"        pm.environment.set(\"task_id\", responseData.id);",
+									"        console.log(\"✅ Task ID salvo: \" + responseData.id);",
+									"    }",
+									"    ",
+									"    pm.test(\"Status code is 201\", function () {",
+									"        pm.response.to.have.status(201);",
+									"    });",
+									"    ",
+									"    pm.test(\"Response has required fields\", function () {",
+									"        pm.expect(responseData).to.have.property('id');",
+									"        pm.expect(responseData).to.have.property('title');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Implementar nova funcionalidade\",\n    \"description\": \"Desenvolver o módulo de relatórios financeiros\",\n    \"status\": 1,\n    \"employee\": 1,\n    \"due_date\": \"2025-12-31\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/companies/tasks",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"tasks"
+							]
+						},
+						"description": "Cria uma nova tarefa.\n\n**Authentication:** Bearer Token (JWT)\n\n**Body Parameters:**\n- `title` (string, required): Título da tarefa\n- `description` (string, optional): Descrição detalhada\n- `status` (integer, required): ID do status da tarefa\n- `employee` (integer, optional): ID do funcionário responsável\n- `due_date` (date, optional): Data de vencimento (formato: YYYY-MM-DD)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Task - Obter Tarefa",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/companies/tasks/{{task_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"tasks",
+								"{{task_id}}"
+							]
+						},
+						"description": "Obtém os detalhes de uma tarefa específica.\n\n**Authentication:** Bearer Token (JWT)\n\n**Path Parameters:**\n- `task_id`: ID da tarefa"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Task - Atualizar Tarefa",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Implementar nova funcionalidade - Atualizado\",\n    \"description\": \"Desenvolver o módulo de relatórios financeiros com gráficos\",\n    \"status\": 2,\n    \"employee\": 1,\n    \"due_date\": \"2025-12-31\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/companies/tasks/{{task_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"tasks",
+								"{{task_id}}"
+							]
+						},
+						"description": "Atualiza os dados de uma tarefa.\n\n**Authentication:** Bearer Token (JWT)\n\n**Path Parameters:**\n- `task_id`: ID da tarefa\n\n**Body Parameters:**\n- `title` (string): Título atualizado\n- `description` (string): Descrição atualizada\n- `status` (integer): ID do status atualizado\n- `employee` (integer): ID do funcionário responsável\n- `due_date` (date): Data de vencimento"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Task - Deletar Tarefa",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/companies/tasks/{{task_id}}",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"tasks",
+								"{{task_id}}"
+							]
+						},
+						"description": "Remove uma tarefa.\n\n**Authentication:** Bearer Token (JWT)\n\n**Path Parameters:**\n- `task_id`: ID da tarefa"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gerenciamento de tarefas"
+		},
+		{
+			"name": "Task Statuses",
+			"item": [
+				{
+					"name": "List Task Statuses - Listar Status de Tarefas",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"if (pm.response.code === 200) {",
+									"    const responseData = pm.response.json();",
+									"    ",
+									"    pm.test(\"Response is an array\", function () {",
+									"        pm.expect(responseData).to.be.an('array');",
+									"    });",
+									"    ",
+									"    if (responseData.length > 0) {",
+									"        pm.test(\"Task status has required fields\", function () {",
+									"            pm.expect(responseData[0]).to.have.property('id');",
+									"            pm.expect(responseData[0]).to.have.property('name');",
+									"            pm.expect(responseData[0]).to.have.property('color');",
+									"        });",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/companies/task-statuses",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"companies",
+								"task-statuses"
+							]
+						},
+						"description": "Lista todos os status de tarefas disponíveis.\n\n**Authentication:** Bearer Token (JWT)\n\n**Response:** Array de objetos TaskStatus contendo:\n- `id`: ID do status\n- `name`: Nome do status (ex: Pendente, Em Andamento, Concluído)\n- `color`: Cor hexadecimal para representação visual\n- `company`: ID da empresa"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para consulta de status de tarefas"
+		},
+		{
 			"name": "Companies",
 			"item": [
 				{
@@ -328,6 +1155,21 @@
 		},
 		{
 			"key": "refresh_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "employee_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "group_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "task_id",
 			"value": "",
 			"type": "string"
 		}
