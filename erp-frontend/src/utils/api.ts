@@ -35,9 +35,23 @@ export const useApi = async <TypeDataResponse>(
     } catch (e) {
         const error = e as AxiosError<ApiError>;
 
+        // Verificar se o erro é 401 (não autorizado) - token expirado ou inválido
+        if (error.response?.status === 401) {
+            // Remover o token inválido
+            localStorage.removeItem('AUTH_ACCESS');
+            
+            // Redirecionar para a página de login
+            window.location.href = '/signin';
+            
+            return {
+                data: null,
+                detail: 'Sessão expirada. Redirecionando para o login...'
+            }
+        }
+
         return {
             data: null,
-            detail: error.response.data.detail || error.message
+            detail: error.response?.data?.detail || error.message
         }
     }
 } 
