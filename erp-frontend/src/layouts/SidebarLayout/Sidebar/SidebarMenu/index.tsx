@@ -32,6 +32,7 @@ import WorkspacePremiumTwoToneIcon from '@mui/icons-material/WorkspacePremiumTwo
 import CameraFrontTwoToneIcon from '@mui/icons-material/CameraFrontTwoTone';
 import DisplaySettingsTwoToneIcon from '@mui/icons-material/DisplaySettingsTwoTone';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
+import Group from '@mui/icons-material/Group';
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -200,8 +201,7 @@ function SidebarMenu() {
         </List>
 
 
-
-                <List
+        <List
           component="div"
           subheader={
             <ListSubheader component="div" disableSticky>
@@ -236,6 +236,46 @@ function SidebarMenu() {
             </List>
           </SubMenuWrapper>
         </List>
+
+
+
+        <List
+          component="div"
+          subheader={
+            <ListSubheader component="div" disableSticky>
+              Funcionários
+            </ListSubheader>
+          }
+        >
+          <SubMenuWrapper>
+            <List component="div">
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to="/employees"
+                  startIcon={<BrightnessLowTwoToneIcon />}
+                >
+                  Gerenciar Funcionários
+                </Button>
+              </ListItem>
+              <ListItem component="div">
+                <Button
+                  disableRipple
+                  component={RouterLink}
+                  onClick={closeSidebar}
+                  to="/employees/add"
+                  startIcon={<Group />}
+                >
+                  Adicionar Funcionário
+                </Button>
+              </ListItem>
+            </List>
+          </SubMenuWrapper>
+        </List>
+
+
 
 
         <List

@@ -23,6 +23,16 @@ const SignIn = Loader(lazy(() => import('src/content/Auth/SignIn')));
 const Groups = Loader(lazy(() => import('src/content/pages/Groups/Groups')));
 const AddGroup = Loader(lazy(() => import('src/content/pages/Groups/Add')));
 const EditGroup = Loader(lazy(() => import('src/content/pages/Groups/Edit')));
+
+
+// Employees
+const Employees = Loader(lazy(() => import('src/content/pages/Employees/Employees')));
+const AddEmployee = Loader(lazy(() => import('src/content/pages/Employees/Add')));
+const EditEmployee = Loader(lazy(() => import('src/content/pages/Employees/Edit')));
+
+
+
+
 // Pages
 
 const Overview = Loader(lazy(() => import('src/content/overview')));
@@ -114,6 +124,25 @@ const routes: RouteObject[] = [
           }
           
 
+        ]
+      },
+      // Employees
+      {
+        path: 'employees',
+        element: <SidebarLayout />,
+        children: [
+          {
+            path: '',
+            element: <Employees />
+          },
+          {
+            path: 'add',
+            element: <AddEmployee />
+          },
+          {
+            path: 'edit/:id',
+            element: <EditEmployee />
+          }
         ]
       },
       {
