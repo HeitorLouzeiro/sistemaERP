@@ -4,6 +4,9 @@ from rest_framework import permissions
 
 
 def check_permission(user, method, permission_to):
+    # Verificar se o usuário está autenticado
+    if not user or not user.is_authenticated:
+        return False
 
     if user.is_owner:
         return True
