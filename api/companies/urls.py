@@ -4,6 +4,7 @@ from companies.views.employees import EmployeeDetail, Employees
 from companies.views.groups import GroupDetail, Groups
 from companies.views.permissions import PermissionDetail
 from companies.views.tasks import TaskDetail, Tasks
+from companies.views.task_status import TaskStatusList
 
 urlpatterns = [
     path('employees', Employees.as_view(), name='employees'),
@@ -20,4 +21,5 @@ urlpatterns = [
     path('tasks', Tasks.as_view(), name='tasks'),
     path('tasks/<int:task_id>',
          TaskDetail.as_view(), name='task_detail'),
+    path('task-statuses', TaskStatusList.as_view(), name='task_statuses'),
 ]
