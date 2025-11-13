@@ -353,7 +353,7 @@ Para dúvidas, sugestões ou feedbacks, abra uma [issue](https://github.com/Heit
 
 <div align="center">
 
-Desenvolvido com ❤️ por [Heitor Louzeiro](https://github.com/HeitorLouzeiro)
+Desenvolvido por [Heitor Louzeiro](https://github.com/HeitorLouzeiro)
 
 ⭐ Se este projeto foi útil, considere dar uma estrela!
 
