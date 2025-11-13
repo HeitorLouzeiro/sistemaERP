@@ -30,6 +30,11 @@ const Employees = Loader(lazy(() => import('src/content/pages/Employees/Employee
 const AddEmployee = Loader(lazy(() => import('src/content/pages/Employees/Add')));
 const EditEmployee = Loader(lazy(() => import('src/content/pages/Employees/Edit')));
 
+// Tasks
+const TasksPage = Loader(lazy(() => import('src/content/pages/Tasks/Tasks')));
+const AddTask = Loader(lazy(() => import('src/content/pages/Tasks/Add')));
+const EditTask = Loader(lazy(() => import('src/content/pages/Tasks/Edit')));
+
 
 
 
@@ -39,7 +44,7 @@ const Overview = Loader(lazy(() => import('src/content/overview')));
 
 // Dashboards
 
-const Tasks = Loader(lazy(() => import('src/content/dashboards/Tasks')));
+const TasksDashboard = Loader(lazy(() => import('src/content/dashboards/Tasks')));
 
 // Applications
 
@@ -145,6 +150,25 @@ const routes: RouteObject[] = [
           }
         ]
       },
+      // Tasks
+      {
+        path: 'tasks',
+        element: <SidebarLayout />,
+        children: [
+          {
+            path: '',
+            element: <TasksPage />
+          },
+          {
+            path: 'add',
+            element: <AddTask />
+          },
+          {
+            path: 'edit/:id',
+            element: <EditTask />
+          }
+        ]
+      },
       {
         path: '/',
         element: <Overview />
@@ -194,7 +218,7 @@ const routes: RouteObject[] = [
       },
       {
         path: 'tasks',
-        element: <Tasks />
+        element: <TasksDashboard />
       },
       {
         path: 'messenger',
